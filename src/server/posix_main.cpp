@@ -13,25 +13,21 @@
 
 int main(int argc, char *argv[]) {
     try {
-        // Check command line arguments.
-        if (argc != 5) {
-            std::cerr << "Usage: http_server <address> <port> <threads> <doc_root>\n";
-            std::cerr << "  For IPv4, try:\n";
-            std::cerr << "    receiver 0.0.0.0 80 1 .\n";
-            std::cerr << "  For IPv6, try:\n";
-            std::cerr << "    receiver 0::0 80 1 .\n";
-            return 1;
-        }
-
         // Block all signals for background thread.
         sigset_t new_mask;
         sigfillset(&new_mask);
         sigset_t old_mask;
         pthread_sigmask(SIG_BLOCK, &new_mask, &old_mask);
 
+        // TODO: read from config
         // Run server in background thread.
-        std::size_t num_threads = boost::lexical_cast<std::size_t>(argv[3]);
-        http::server3::server s(argv[1], argv[2], argv[4], num_threads);
+
+        std::size_t num_threads = 1;
+        std::string port = "80";
+        std::string address = "0.0.0.0";
+        std::string doc_root = ".";
+        http::server3::server s(address, port, doc_root, num_threads);
+        // http::server3::server s(argv[1], argv[2], argv[4], num_threads);
         boost::thread t(boost::bind(&http::server3::server::run, &s));
 
         // Restore previous signals.

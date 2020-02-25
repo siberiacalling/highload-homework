@@ -13,7 +13,11 @@ namespace http {
                             {"htm",  "text/html"},
                             {"html", "text/html"},
                             {"jpg",  "image/jpeg"},
+                            {"jpeg",  "image/jpeg"},
                             {"png",  "image/png"},
+                            {"css",  "text/css"},
+                            {"js",  "text/javascript"},
+                            {"swf",  "application/x-shockwave-flash"},
                             {0,      0} // Marks end of list.
                     };
 

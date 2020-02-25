@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 #include <boost/lexical_cast.hpp>
+#include <iostream>
 #include "mime_types.hpp"
 #include "reply.hpp"
 #include "request.hpp"
@@ -15,6 +16,8 @@ namespace http {
         }
 
         void request_handler::handle_request(const request &req, reply &rep) {
+            std::cout << req.uri << std::endl;
+
             // Decode url to path.
             std::string request_path;
             if (!url_decode(req.uri, request_path)) {
@@ -24,7 +27,7 @@ namespace http {
 
             // Request path must be absolute and not contain "..".
             if (request_path.empty() || request_path[0] != '/'
-                || request_path.find("..") != std::string::npos) {
+                || request_path.find("../") != std::string::npos) {
                 rep = reply::stock_reply(reply::bad_request);
                 return;
             }
@@ -41,6 +44,7 @@ namespace http {
             if (last_dot_pos != std::string::npos && last_dot_pos > last_slash_pos) {
                 extension = request_path.substr(last_dot_pos + 1);
             }
+            std::cout << "Extension: " << extension << std::endl;
 
             // Open the file to send back.
             std::string full_path = doc_root_ + request_path;

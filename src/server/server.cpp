@@ -16,7 +16,7 @@ namespace http {
                   request_handler_(doc_root) {
             // Open the acceptor with the option to reuse the address (i.e. SO_REUSEADDR).
             boost::asio::ip::tcp::resolver resolver(io_service_);
-            std::cerr << "address " << address <<  " port " << port;
+            std::cerr << "address " << address <<  " port " << port << std::endl;
             boost::asio::ip::tcp::resolver::query query(address, port);
             boost::asio::ip::tcp::endpoint endpoint = *resolver.resolve(query);
             acceptor_.open(endpoint.protocol());
