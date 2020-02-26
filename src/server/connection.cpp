@@ -1,6 +1,7 @@
 #include "connection.hpp"
 #include <vector>
 #include <boost/bind.hpp>
+#include <iostream>
 #include "request_handler.hpp"
 
 namespace http {
@@ -34,6 +35,7 @@ namespace http {
 
                 if (result) {
                     request_handler_.handle_request(request_, reply_);
+
                     boost::asio::async_write(socket_, reply_.to_buffers(),
                                              strand_.wrap(
                                                      boost::bind(&connection::handle_write, shared_from_this(),
