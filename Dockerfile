@@ -6,6 +6,7 @@ RUN apt-get -y install libboost-all-dev && apt -y install g++ && apt-get -y inst
 
 WORKDIR /server
 COPY . /server
+COPY ./server.conf /etc/server.conf
 
 RUN cmake ./CMakeLists.txt
 RUN make

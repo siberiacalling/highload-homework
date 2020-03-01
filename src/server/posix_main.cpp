@@ -5,11 +5,14 @@
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include "server.hpp"
+#include <fstream>
+#include "config.hpp"
 
 #if !defined(_WIN32)
 
 #include <pthread.h>
 #include <signal.h>
+
 
 int main(int argc, char *argv[]) {
     try {
@@ -19,15 +22,12 @@ int main(int argc, char *argv[]) {
         sigset_t old_mask;
         pthread_sigmask(SIG_BLOCK, &new_mask, &old_mask);
 
-        // TODO: read from config
-        // Run server in background thread.
-
-        std::size_t num_threads = 1;
-        std::string port = "80";
-        std::string address = "0.0.0.0";
-        std::string doc_root = ".";
-        http::server3::server s(address, port, doc_root, num_threads);
-        // http::server3::server s(argv[1], argv[2], argv[4], num_threads);
+        Config conf;
+        std::size_t num_threads = std::stoi(conf.thread_limit);
+        std::string port = conf.port;
+        std::string address = conf.address;
+        std::string document_root = conf.document_root;
+        http::server3::server s(address, port, document_root, num_threads);
         boost::thread t(boost::bind(&http::server3::server::run, &s));
 
         // Restore previous signals.
@@ -44,6 +44,7 @@ int main(int argc, char *argv[]) {
         sigwait(&wait_mask, &sig);
 
         // Stop the server.
+        std::cerr << "Server stopped" << std::endl;
         s.stop();
         t.join();
     }
